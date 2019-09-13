@@ -1,0 +1,132 @@
+<form>
+              <div class="form-group">
+                <label for="titulo">Titulo</label>
+                <input type="text" class="form-control" id="titulo" placeholder="Titulo película">
+              </div>
+              <div class="form-group">
+                <label for="director">Director</label>
+                <input type="text" class="form-control" id="director" placeholder="Director película">
+              </div>
+              <div class="form-group">
+                <label for="duracion">Duracion</label>
+                <input type="text" class="form-control" id="duracion" placeholder="Duración película">
+              </div>
+              <div class="form-group">
+                <div class="md-form">
+                    Inicio proyeccion <input type="date" name="fecha" id="inicioExhibicion">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="md-form">
+                    Final proyeccion <input type="date" name="fecha" id="finExhibicion">
+                </div>
+              </div>
+              <div class="g-recaptcha" data-sitekey="6LcFRLgUAAAAAPbuVv8EYj0AmM5Wa90ITCRNDCTQ"></div>
+</form>
+
+<button type="button" id="guardar" class="btn btn-success">Guardar</button>
+<button type="button" class="btn btn-danger">Cancelar</button>
+
+<script>
+
+    if (localStorage.getItem('logueado') !== 'undefined') {
+        location.href = 'peliculas';
+    }
+
+    var button = document.getElementById("guardar");
+    var director = document.getElementById("director");
+    var titulo = document.getElementById("titulo");
+    var duracion = document.getElementById("duracion");
+    var inicio = document.getElementById("inicioExhibicion");
+    var fin = document.getElementById("finExhibicion");
+    button.onclick = function() {
+        var response = grecaptcha.getResponse();
+
+        if(response.length == 0){
+        alert("Captcha no verificado ")
+        } else {
+            if (localStorage.getItem('id') !== 'undefined') {
+                actualizaRegistro();
+            } else {
+                guardaRegistro();
+            }
+        }
+        
+    }
+
+    if (localStorage.getItem('id') !== 'undefined') {
+        obtenerRegistro();
+    }
+
+    function obtenerRegistro() {
+        fetch('api/pelicula/' + localStorage.getItem('id'), {
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then (data => {
+            {{!-- console.log(data.pelicula.finExhibicion.dateFormat('dd-mm-yyyy')); --}}
+            titulo.value = data.pelicula.titulo;
+            director.value = data.pelicula.director;
+            duracion.value = data.pelicula.duracion;
+            inicio.value = data.pelicula.inicioExhibicion;
+            fin.value = data.pelicula.finExhibicion;
+        })
+    }
+
+    function actualizaRegistro() {
+        var data = {
+            titulo: document.getElementById('titulo').value,
+            director: document.getElementById('director').value,
+            duracion: document.getElementById('duracion').value,
+            inicioExhibicion: document.getElementById('inicioExhibicion').value,
+            finExhibicion: document.getElementById('finExhibicion').value
+        }
+
+        fetch('/api/pelicula/' + localStorage.getItem('id'), {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            alert('Cambios guardados correctamente');
+            localStorage.clear();
+            location.href = 'peliculas';
+        })
+        .catch(error => alert('Error'))
+    }
+
+    {{!-- function guardarCambios(){
+        guardaRegistro();
+    } --}}
+
+    function guardaRegistro() {
+        var data = {
+            titulo: document.getElementById('titulo').value,
+            director: document.getElementById('director').value,
+            duracion: document.getElementById('duracion').value,
+            inicioExhibicion: document.getElementById('inicioExhibicion').value,
+            finExhibicion: document.getElementById('finExhibicion').value
+        }
+
+        fetch('/api/pelicula', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Cambios guardados correctamente');
+            location.href = 'peliculas';
+        })
+        .catch(error => alert('Error'))
+
+    }
+
+</script>

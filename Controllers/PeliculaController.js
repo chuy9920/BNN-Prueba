@@ -51,8 +51,8 @@ function updatePelicula (req, res) {
     let peliculaId = req.params.peliculaId;
     let update = req.body;
 
-
-    Pelicula.findById(peliculaId, update, (err, peliculaActualizada) => {
+    console.log(update)
+    Pelicula.findByIdAndUpdate(peliculaId, update, (err, peliculaActualizada) => {
         if (err) res.status(500).send({ message: `Error al actualizar la pelicula: ${err}`});
 
         res.status(200).send({ pelicula: peliculaActualizada});

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const hbs = require('express-handlebars');
 
 const api = require('./Routes/index');
 
@@ -15,6 +16,26 @@ app.use((req, res, next) => {
     next();
 });
 
+app.engine('.hbs', hbs({
+    defaultLayout: 'default',
+    extname: '.hbs'
+}));
+
+app.set('view engine', '.hbs');
+
 app.use('/api', api);
+app.use('/login', (req, res) => {
+    res.render('login');
+});
+
+app.use('/peliculas', (req, res) => {
+    res.render('peliculas');
+});
+
+app.use('/form', (req, res) => {
+    res.render('form');
+});
+
+
 
 module.exports = app;

@@ -10,9 +10,13 @@ function signIn(req, res) {
         // req.user = usuario;
 
         console.log(usuario)
-        if (usuario.length == 0) return res.status(400).send({ message: 'No existe el usuario' });
+        if (usuario.length == 0) return res.status(400).send({ 
+            message: 'No existe el usuario',
+            login: 0
+        });
         res.status(200).send({
             message: 'Te has logueado correctamente',
+            login: 1,
             usuario: usuario.usuario
          });
     });

@@ -1,0 +1,103 @@
+{{!-- <nav></nav> --}}
+<div class="row" id="peliculas"></div>
+<script>
+
+    if (localStorage.getItem('logueado') === "1") {
+        document.getElementById('agregar').style.display="Block";
+    }
+    obtenerPeliculas();
+
+    function obtenerPeliculas() {
+        fetch('/api/pelicula')
+    .then(res => res.json())
+    .then(data => {
+        console.log(data.peliculas.length);
+        for(var x = 0; x < data.peliculas.length; x++) {
+            let divTamanio = document.createElement('div');
+            divTamanio.className = 'col-sm-4';
+
+            let divClas = document.createElement('div');
+            divClas.className ="card";
+            divClas.style.width="18rem"
+
+            let divBody = document.createElement('div');
+            divBody.className = "card-body";
+
+            let eH5 = document.createElement('h5');
+            eH5.className = "card-title";
+            eH5.innerHTML  = data.peliculas[x].titulo;
+
+            let eH6 = document.createElement('h6');
+            eH6.className = "card-subtitle mb-2 text-muted";
+            eH6.innerHTML  = data.peliculas[x].director;
+
+            let parrafo = document.createElement('p');
+            parrafo.className = "card-text";
+            parrafo.innerHTML = data.peliculas[x].duracion;
+
+            let parrafo2 = document.createElement('p');
+            parrafo.className = "card-text";
+            parrafo.innerHTML = data.peliculas[x].inicioExhibicion + ' - ' + data.peliculas[x].finExhibicion;
+
+            let id = data.peliculas[x]._id;
+            console.log("id es" + id);
+            let button1 = document.createElement('a');
+            button1.href = "#";
+            button1.className = "card-link";
+            button1.innerHTML = "Editar"
+            button1.onclick = function() {edita(id)};
+
+            let button2 = document.createElement('a');
+            button2.href = "#";
+            button2.className = "card-link";
+            button2.innerHTML = "Eliminar"
+            button2.onclick = function() {elimina(id)}
+
+            if (localStorage.getItem('logueado') !== '1') {
+                button1.style.display="None";
+                button2.style.display="None";
+            }
+
+            divBody.appendChild(eH5);
+            divBody.appendChild(eH6);
+            divBody.appendChild(parrafo);
+            divBody.appendChild(parrafo2);
+            divBody.appendChild(button1);
+            divBody.appendChild(button2);
+
+            divClas.appendChild(divBody);
+            divTamanio.appendChild(divClas);
+            document.getElementById('peliculas').appendChild(divTamanio);
+            /*
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="card-link">Card link</a>
+                    <a href="#" class="card-link">Another link</a>
+                </div>
+            </div>
+            */
+            console.log(data.peliculas[x]);
+        }
+    })
+    }
+    function edita(id) {
+        localStorage.setItem('id', id);
+        location.href = 'form';
+    }
+
+    function elimina(id) {
+        fetch('/api/pelicula/' + id, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            alert('Cambios Guardados correctamente');
+            document.getElementById('peliculas').innerHTML = '';
+            obtenerPeliculas();
+        })
+    }
+</script>
