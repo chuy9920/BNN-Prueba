@@ -1,14 +1,4 @@
 const Pelicula = require('../Models/Pelicula');
-
-/**
- * @method
- * @description Obtiene listado de películas guardadas en Base de datos
- * @since 0.1.0
- * @version 1.0
- * @param {*} req 
- * @param {*} res 
- * @returns {Json} Listado Películas
- */
 function obtenerPelicula(req, res) {
     Pelicula.find({}, (err, peliculas) => {
         if (err) return res.status(400).send({ message: 'Error al obtener los datos'});
@@ -43,9 +33,6 @@ function guardaPelicula(req, res) {
     pelicula.finExhibicion = new Date(params.finExhibicion);
 
     console.log(Date.parse(params.inicioExhibicion));
-
-    // pelicula.inicioExhibicion = params.inicioExhibicion;
-    // pelicula.finExhibicion = params.finExhibicion;
 
     pelicula.save((err, peliculaSaved) => {
         if (err) return res.status(500).send({error: 'No se pudo guardar la pelicula: ' + err});

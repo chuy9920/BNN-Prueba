@@ -2,7 +2,7 @@ const Usuario = require('../Models/Usuarios');
 
 function signIn(req, res) {
     console.log(req.body)
-    Usuario.find({ usuario: req.body.usuario, contrasenia: req.body.contrasenia }, (err, usuario) => {
+    Usuario.find({ usuario: req.body.usuario, contrasenia: req.body.contrasenia}, (err, usuario) => {
         if (err) return res.status(500).send({ message: err });
 
         if (!usuario) return res.status(400).send({ message: 'No existe el usuario' });

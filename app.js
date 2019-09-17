@@ -25,17 +25,15 @@ app.set('view engine', '.hbs');
 
 app.use('/api', api);
 app.use('/login', (req, res) => {
-    res.render('login');
+    res.render('/login');
 });
 
 app.use('/peliculas', (req, res) => {
-    res.render('peliculas');
+    res.render('/peliculas');
 });
 
 app.use('/form', (req, res) => {
     res.render('form');
 });
-
-
 
 module.exports = app;
