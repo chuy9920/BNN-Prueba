@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Peliculas</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="container pt-3">
+        <div class="row justify-content-sm-center">
+          <div class="col-sm-10 col-md-6">
+            <div class="card border-info">
+              <div class="card-header">Inicia Sesión</div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4 text-center">
+                    <img src="https://image.freepik.com/vector-gratis/perfil-avatar-hombre-icono-redondo_24640-14044.jpg" width="80">
+                    <h4 class="text-center">Iniciar Sesión</h4>
+                  </div>
+                  <div class="col-md-8">
+                    <form class="form-signin" id="login">
+                      <input id="user" name="email" type="text" class="form-control mb-2" placeholder="Correo" required autofocus>
+                      <input id="password" name="password" type="password" class="form-control mb-2" placeholder="Constraseña" required>
+                      <input class="btn btn-lg btn-primary btn-block mb-1" type="submit" value="Iniciar Sesion">
+                      <label class="checkbox float-left">
+                  </label>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  <script>
+      const formLogin = document.querySelector("#login");
+      const formData = new FormData(formLogin);
+  
+      localStorage.clear();
+  
+      formLogin.addEventListener('submit', event => {
+          event.preventDefault();
+          var user = {
+            "usuario": document.getElementById('user').value,
+            "contrasenia": document.getElementById('password').value
+          }
+  
+      fetch('/api/usuarios', {
+          method: 'POST',
+          body: JSON.stringify(user),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(res => res.json())
+      .then(data => {
+          console.log(data);
+          if (data.login === 1) {
+            localStorage.setItem('logueado', 1)
+            location.href = 'peliculas.html'
+            console.log('ok')
+          } else {
+              alert('Usuario incorrecto');
+          }
+      })
+      .catch(err => {
+          console.log(err);
+          alert('Ocurrió un error');
+      });
+        console.log(user);
+      });
+  </script>
+</body>
+</html>

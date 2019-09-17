@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Peliculas</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+        <nav id="navegacion" class="navbar navbar-light bg-success">
+                <a class="navbar-brand mx-auto" href="/form.hbs">Cartelera</a>
+                <a href="form.html" type="button" id="agregar" class="btn btn-primary btn-lg float-right" style="display: none">
+                    Agregar Pelicula
+                  </a>
+            </nav>
+<div class="row" id="peliculas"></div>
+<script>
+
+    if (localStorage.getItem('logueado') === "1") {
+        document.getElementById('agregar').style.display="Block";
+    }
+
+    if (localStorage.getItem('registro') === 'true') {
+        document.getElementById('agregar').style.display="none";
+        setTimeout(() => {
+            document.getElementById('agregar').style.display="Block";
+            localStorage.removeItem('registro');
+        }, 300000);
+    }
+
+    obtenerPeliculas();
+
+    function obtenerPeliculas() {
+        fetch('/api/pelicula')
+    .then(res => res.json())
+    .then(data => {
+        console.log(data.peliculas.length);
+        for(var x = 0; x < data.peliculas.length; x++) {
+            let divTamanio = document.createElement('div');
+            divTamanio.className = 'col-sm-4';
+
+            let divClas = document.createElement('div');
+            divClas.className ="card";
+            divClas.style.width="18rem"
+
+            let divBody = document.createElement('div');
+            divBody.className = "card-body";
+
+            let eH5 = document.createElement('h5');
+            eH5.className = "card-title";
+            eH5.innerHTML  = data.peliculas[x].titulo;
+
+            let eH6 = document.createElement('h6');
+            eH6.className = "card-subtitle mb-2 text-muted";
+            eH6.innerHTML  = data.peliculas[x].director;
+
+            let parrafo = document.createElement('p');
+            parrafo.className = "card-text";
+            parrafo.innerHTML = data.peliculas[x].duracion;
+
+            let parrafo2 = document.createElement('p');
+            parrafo.className = "card-text";
+            parrafo.innerHTML = data.peliculas[x].inicioExhibicion + ' - ' + data.peliculas[x].finExhibicion;
+
+            let id = data.peliculas[x]._id;
+            console.log("id es" + id);
+            let button1 = document.createElement('a');
+            button1.href = "#";
+            button1.className = "card-link";
+            button1.innerHTML = "Editar"
+            button1.onclick = function() {edita(id)};
+
+            let button2 = document.createElement('a');
+            button2.href = "#";
+            button2.className = "card-link";
+            button2.innerHTML = "Eliminar"
+            button2.onclick = function() {elimina(id)}
+
+            if (localStorage.getItem('logueado') !== '1') {
+                button1.style.display="None";
+                button2.style.display="None";
+            }
+
+            divBody.appendChild(eH5);
+            divBody.appendChild(eH6);
+            divBody.appendChild(parrafo);
+            divBody.appendChild(parrafo2);
+            divBody.appendChild(button1);
+            divBody.appendChild(button2);
+
+            divClas.appendChild(divBody);
+            divTamanio.appendChild(divClas);
+            document.getElementById('peliculas').appendChild(divTamanio);
+            console.log(data.peliculas[x]);
+        }
+    })
+    }
+    function edita(id) {
+        localStorage.setItem('id', id);
+        location.href = 'form.html';
+    }
+
+    function elimina(id) {
+        fetch('/api/pelicula/' + id, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            alert('Cambios Guardados correctamente');
+            document.getElementById('peliculas').innerHTML = '';
+            obtenerPeliculas();
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Peliculas</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+        <form id="">
+                <div class="form-group">
+                  <label for="titulo">Titulo</label>
+                  <input type="text" class="form-control" id="titulo" placeholder="Titulo película">
+                </div>
+                <div class="form-group">
+                  <label for="director">Director</label>
+                  <input type="text" class="form-control" id="director" placeholder="Director película">
+                </div>
+                <div class="form-group">
+                  <label for="duracion">Duracion</label>
+                  <input type="text" class="form-control" id="duracion" placeholder="Duración película">
+                </div>
+                <div class="form-group">
+                  <div class="md-form">
+                      Inicio proyeccion <input type="date" name="fecha" id="inicioExhibicion">
+                  </div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="md-form">
+                      Final proyeccion <input type="date" name="fecha" id="finExhibicion">
+                  </div>
+                </div>
+                <div class="g-recaptcha" data-sitekey="6LcFRLgUAAAAAPbuVv8EYj0AmM5Wa90ITCRNDCTQ"></div>
+  </form>
+  
+  <button type="button" id="guardar" class="btn btn-success">Guardar</button>
+  <button type="button" class="btn btn-danger">Cancelar</button>
+  
+  <script>
+  
+      if (localStorage.getItem('logueado') === 'null') {
+          location.href = 'index.html';
+      }
+  
+      var button = document.getElementById("guardar");
+      var director = document.getElementById("director");
+      var titulo = document.getElementById("titulo");
+      var duracion = document.getElementById("duracion");
+      var inicio = document.getElementById("inicioExhibicion");
+      var fin = document.getElementById("finExhibicion");
+      button.onclick = function() {
+          var response = grecaptcha.getResponse();
+  
+          if(response.length == 0){
+            alert("Captcha no verificado ")
+          } else {
+            if (validar()) {
+                if (localStorage.getItem('id') === 'undefined' || localStorage.getItem('id')=== 'null' || localStorage.getItem('id')=== null || localStorage.getItem('id') === '0') {
+                  guardaRegistro();
+            } else {
+                actualizaRegistro();
+                console.log(localStorage.getItem('id'))
+              }
+            } else {
+                alert('La fecha de inicio no puede ser mayor a la del final de la exibicion')
+            }
+
+          }
+
+      }
+  
+      if (localStorage.getItem('id') !== 'undefined') {
+          obtenerRegistro();
+      }
+  
+      function obtenerRegistro() {
+          fetch('api/pelicula/' + localStorage.getItem('id'), {
+              method: 'GET'
+          })
+          .then(res => res.json())
+          .then (data => {
+              titulo.value = data.pelicula.titulo;
+              director.value = data.pelicula.director;
+              duracion.value = data.pelicula.duracion;
+              inicio.value = data.pelicula.inicioExhibicion;
+              fin.value = data.pelicula.finExhibicion;
+          })
+      }
+  
+      function actualizaRegistro() {
+          var data = {
+              titulo: document.getElementById('titulo').value,
+              director: document.getElementById('director').value,
+              duracion: document.getElementById('duracion').value,
+              inicioExhibicion: document.getElementById('inicioExhibicion').value,
+              finExhibicion: document.getElementById('finExhibicion').value
+          }
+  
+          fetch('/api/pelicula/' + localStorage.getItem('id'), {
+          method: 'PUT',
+          body: JSON.stringify(data),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+          })
+          .then(res => res.json())
+          .then(data => {
+              console.log(data)
+              alert('Actualización correcta');
+              localStorage.removeItem('id');
+              location.href = 'peliculas.html';
+          })
+          .catch(error => alert('Error'))
+      }
+
+      function guardaRegistro() {
+          var data = {
+              titulo: document.getElementById('titulo').value,
+              director: document.getElementById('director').value,
+              duracion: document.getElementById('duracion').value,
+              inicioExhibicion: document.getElementById('inicioExhibicion').value,
+              finExhibicion: document.getElementById('finExhibicion').value
+          }
+  
+          fetch('/api/pelicula', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+          })
+          .then(res => res.json())
+          .then(data => {
+              localStorage.setItem('registro', 'true')
+              alert('Cambios guardados correctamente, no podrá agregar registros hasta dentro de 5 minutos');
+              location.href = 'peliculas.html';
+          })
+          .catch(error => alert('Error'))
+  
+      }
+  
+      function validar() {
+        // var inicio = document.getElementById('fecha_inicio').value; 
+        // var finalq  = document.getElementById('fecha_fin').value;
+        var inicio = document.getElementById("inicioExhibicion").value;
+        var fin = document.getElementById("finExhibicion").value;
+        inicio= new Date(inicio);
+        finalq= new Date(fin);
+        if(inicio>finalq) return false;
+
+        return true;
+        }
+
+  </script>
+</body>
+</html>
