@@ -12,7 +12,29 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
-        <nav id="navegacion" class="navbar navbar-light bg-success">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#"><h3>Películas en cartelera</h3></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="peliculas.html">Inicio <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="form.html" id="agregar" style="display: none">Agregar Película</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="usuarios.html" id="agregarUser" style="display: none">Agregar Usuario</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.html" id="cierraSesion" style="display: none">Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+        <!-- <nav id="navegacion" class="navbar navbar-light bg-success">
                 <a class="navbar-brand mx-auto" href="/form.hbs">Cartelera</a>
                 <a href="form.html" type="button" id="agregar" class="btn btn-lg float-right" style="display: none">
                     Agregar Pelicula
@@ -20,12 +42,14 @@
                   <a href="usuarios.html" type="button" id="agregar" class="btn btn-lg float-right">
                         Agregar Usuario
                       </a>
-            </nav>
+            </nav> -->
 <div class="row" id="peliculas"></div>
 <script>
 
     if (localStorage.getItem('logueado') === "1") {
         document.getElementById('agregar').style.display="Block";
+        document.getElementById('agregarUser').style.display="Block";
+        document.getElementById('cierraSesion').style.display="Block";
     }
 
     if (localStorage.getItem('registro') === 'true') {

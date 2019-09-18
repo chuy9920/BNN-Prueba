@@ -13,15 +13,34 @@
     <title>Peliculas</title>
 </head>
 <body>
-    <div>
-            <form id="">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#"><h3>Agrega tu usuario</h3></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="peliculas.html">Inicio <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="form.html" id="agregarUser">Agregar Pelicula</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html" id="cierraSesion">Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="principal">
+            <form>
                     <div class="form-group">
                       <label for="user">Usuario</label>
-                      <input type="text" class="form-control" id="user" placeholder="Titulo película">
+                      <input type="text" class="form-control" id="user" placeholder="Usuario">
                     </div>
                     <div class="form-group">
                       <label for="contrasenia">Contraseña</label>
-                      <input type="password" class="form-control" id="contrasenia" placeholder="Director película">
+                      <input type="password" class="form-control" id="contrasenia" placeholder="Contrasenia">
                     </div>
       </form>
       <button type="button" id="guardarUsuario" class="btn btn-success">Guardar</button>
